@@ -1,11 +1,24 @@
-import "./App.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-function App() {
+import "./App.css";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import LoginPage from "./pages/Login";
+import SignupPage from "./pages/SignupPage";
+
+const App = () => {
   return (
     <div className="App">
-      <div>CSCI 5409 - Group 35</div>
+      <BrowserRouter>
+        {/* <NavbarComponent /> */}
+        <Routes>
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
-}
+};
 
 export default App;
