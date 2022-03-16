@@ -1,3 +1,7 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { CognitoUserAttribute } from "amazon-cognito-identity-js";
+import Alert from "@mui/material/Alert";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -6,17 +10,68 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+
+import UserPool from "../../utility/UserPool";
 
 const Signup = () => {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
+  const navigate = useNavigate();
+
+  const [userDetails, setUserDetails] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleChange = ({ target: { name, value } }) => {
+    setUserDetails((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!firstName) {
+      return setErrorMessage("First name is required.");
+    }
+    if (!lastName) {
+      return setErrorMessage("Last name is required.");
+    }
+    if (!email) {
+      return setErrorMessage("Email address is required.");
+    }
+    if (!password) {
+      return setErrorMessage("Password is required.");
+    }
+    setErrorMessage("");
+
+    // const attributeList = [];
+    // const dataEmail = {
+    //   Name: "email",
+    //   Value: email,
+    // };
+    // const attributeEmail = new CognitoUserAttribute(dataEmail);
+    // attributeList.push(attributeEmail);
+
+    UserPool.signUp(email, password, [], null, (err, result) => {
+      if (err) {
+        return setErrorMessage(err.message || JSON.stringify(err));
+      }
+      // console.log("result", result);
+      const cognitoUser = result.user;
+      console.log("user name is " + cognitoUser.getUsername());
+      navigate("/login");
     });
   };
+
+  const { firstName, lastName, email, password } = userDetails;
 
   return (
     <>
@@ -27,48 +82,70 @@ const Signup = () => {
         Sign up
       </Typography>
       <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+        {errorMessage && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {errorMessage}
+          </Alert>
+        )}
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
             <TextField
-              autoComplete="given-name"
-              name="firstName"
-              required
+              autoFocus
               fullWidth
+              name="firstName"
               id="firstName"
               label="First Name"
-              autoFocus
+              size="small"
+              value={firstName}
+              onChange={handleChange}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
-              required
               fullWidth
+              name="lastName"
               id="lastName"
               label="Last Name"
-              name="lastName"
-              autoComplete="family-name"
+              size="small"
+              value={lastName}
+              onChange={handleChange}
             />
           </Grid>
           <Grid item xs={12}>
             <TextField
-              required
               fullWidth
+              type="email"
               id="email"
               label="Email Address"
               name="email"
-              autoComplete="email"
+              size="small"
+              value={email}
+              onChange={handleChange}
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="new-password"
-            />
+            <FormControl fullWidth size="small" variant="outlined">
+              <InputLabel>Password</InputLabel>
+              <OutlinedInput
+                name="password"
+                label="Password"
+                type={showPassword ? "text" : "password"}
+                id="password"
+                value={password}
+                onChange={handleChange}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      onMouseDown={(e) => e.preventDefault()}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+              />
+            </FormControl>
           </Grid>
         </Grid>
         <Button

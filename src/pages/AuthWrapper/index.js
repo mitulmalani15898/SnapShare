@@ -1,12 +1,13 @@
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
+
 import Copyright from "../../components/Copyright";
 
 const AuthWrapper = ({ children }) => {
   return (
     <Container
       component="main"
-      maxWidth="sm"
+      maxWidth="xs"
       sx={{
         marginTop: 8,
         display: "flex",
@@ -20,9 +21,10 @@ const AuthWrapper = ({ children }) => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          border: "1px solid #d0cece",
+          border: "1px solid rgba(0, 0, 0, 0.12)",
           borderRadius: 2,
-          p: 4,
+          py: 4,
+          px: 3,
         }}
       >
         {children}
