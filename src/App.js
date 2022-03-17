@@ -1,28 +1,116 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-
-import { Account } from "./components/Account";
-import ForgotPasswordPage from "./pages/ForgotPasswordPage";
-import LoginPage from "./pages/Login";
-import SignupPage from "./pages/SignupPage";
-import DashboardPage from "./pages/Dashboard";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Outlet,
+  Navigate,
+} from "react-router-dom";
 
 import "./App.css";
+import Navbar from "./components/Navbar";
+import Pricing from "./components/Subscription";
+import { isLoggedIn } from "./utility/common";
+import Copyright from "./components/Copyright";
+import Dashboard from "./components/Dashboard";
+import ForgotPassword from "./components/ForgotPassword";
+import Signup from "./components/Signup";
+import Login from "./components/Login";
+
+const PrivateRoute = ({ children }) => {
+  return isLoggedIn() ? children : <Navigate to="/login" replace={true} />;
+};
+
+const PublicRoute = ({ children }) => {
+  return isLoggedIn() ? <Navigate to="/" replace={true} /> : children;
+};
+
+const PrivateWrapper = ({ children }) => (
+  <PrivateRoute>
+    <Navbar />
+    {children}
+    <Copyright />
+  </PrivateRoute>
+);
 
 const App = () => {
   return (
     <div className="App">
-      <Account>
-        <BrowserRouter>
-          {/* <NavbarComponent /> */}
-          <Routes>
-            <Route path="/" element={<LoginPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
-            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
-          </Routes>
-        </BrowserRouter>
-      </Account>
+      <BrowserRouter>
+        <Routes>
+          <Route
+            exact
+            path="/"
+            element={
+              <PrivateWrapper>
+                <Dashboard />
+              </PrivateWrapper>
+            }
+          />
+          <Route
+            exact
+            path="/myDocs"
+            element={
+              <PrivateWrapper>
+                <Dashboard />
+              </PrivateWrapper>
+            }
+          />
+          <Route
+            exact
+            path="/sharedDocs"
+            element={
+              <PrivateWrapper>
+                <Dashboard />
+              </PrivateWrapper>
+            }
+          />
+          <Route
+            exact
+            path="/subscription"
+            element={
+              <PrivateWrapper>
+                <Pricing />
+              </PrivateWrapper>
+            }
+          />
+          <Route
+            exact
+            path="/profile"
+            element={
+              <PrivateWrapper>
+                <Dashboard />
+              </PrivateWrapper>
+            }
+          />
+          <Route
+            exact
+            path="/login"
+            element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            }
+          />
+          <Route
+            exact
+            path="/signup"
+            element={
+              <PublicRoute>
+                <Signup />
+              </PublicRoute>
+            }
+          />
+          <Route
+            exact
+            path="/forgot-password"
+            element={
+              <PublicRoute>
+                <ForgotPassword />
+              </PublicRoute>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 };

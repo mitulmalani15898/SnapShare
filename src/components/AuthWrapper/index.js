@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 
-import Copyright from "../../components/Copyright";
+import Copyright from "../Copyright";
 
 const AuthWrapper = ({ children }) => {
   return (
@@ -10,6 +10,7 @@ const AuthWrapper = ({ children }) => {
       maxWidth="xs"
       sx={{
         marginTop: 8,
+        marginBottom: 8,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",

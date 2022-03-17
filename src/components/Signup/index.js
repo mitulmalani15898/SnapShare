@@ -18,6 +18,7 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 
+import AuthWrapper from "../AuthWrapper";
 import UserPool from "../../utility/UserPool";
 
 const Signup = () => {
@@ -74,7 +75,7 @@ const Signup = () => {
   const { firstName, lastName, email, password } = userDetails;
 
   return (
-    <>
+    <AuthWrapper>
       <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
         <LockOutlinedIcon />
       </Avatar>
@@ -164,7 +165,7 @@ const Signup = () => {
           </Grid>
         </Grid>
       </Box>
-    </>
+    </AuthWrapper>
   );
 };
 

@@ -7,19 +7,15 @@ import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 
+import AuthWrapper from "../AuthWrapper";
+
 const ForgotPassword = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
   };
 
   return (
-    <>
+    <AuthWrapper>
       <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
         <LockOutlinedIcon />
       </Avatar>
@@ -33,10 +29,9 @@ const ForgotPassword = () => {
         sx={{ mt: 3, width: 1 }}
       >
         <TextField
-          autoComplete="given-name"
-          name="firstName"
-          required
           fullWidth
+          name="firstName"
+          size="small"
           id="firstName"
           label="First Name"
           autoFocus
@@ -57,7 +52,7 @@ const ForgotPassword = () => {
           </Grid>
         </Grid>
       </Box>
-    </>
+    </AuthWrapper>
   );
 };
 

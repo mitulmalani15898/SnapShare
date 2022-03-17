@@ -16,7 +16,9 @@ import IconButton from "@mui/material/IconButton";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
-import { AccountContext } from "../Account";
+
+import { AccountContext } from "../AccountProvider";
+import AuthWrapper from "../AuthWrapper";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -46,7 +48,7 @@ const Login = () => {
 
     authenticate(email, password)
       .then((data) => {
-        navigate("/dashboard");
+        navigate("/", { replace: true });
       })
       .catch((err) => setErrorMessage(err.message || JSON.stringify(err)));
   };
@@ -54,7 +56,7 @@ const Login = () => {
   const { email, password } = loginDetails;
 
   return (
-    <>
+    <AuthWrapper>
       <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
         <LockOutlinedIcon />
       </Avatar>
@@ -127,7 +129,7 @@ const Login = () => {
           </Grid>
         </Grid>
       </Box>
-    </>
+    </AuthWrapper>
   );
 };
 

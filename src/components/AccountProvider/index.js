@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 import { createContext } from "react";
 import { CognitoUser, AuthenticationDetails } from "amazon-cognito-identity-js";
 
@@ -5,7 +6,11 @@ import Pool from "../../utility/UserPool";
 
 const AccountContext = createContext();
 
-const Account = (props) => {
+const cookieMeta = {
+  path: "",
+};
+
+const AccountProvider = (props) => {
   const getSession = async () => {
     return await new Promise((resolve, reject) => {
       const user = Pool.getCurrentUser();
@@ -31,16 +36,16 @@ const Account = (props) => {
 
       user.authenticateUser(authDetails, {
         onSuccess: (data) => {
-          console.log("onSuccess", data);
+          Cookies.set("accessToken", data.accessToken.jwtToken, cookieMeta);
+          Cookies.set("idToken", data.idToken.jwtToken, cookieMeta);
+          Cookies.set("refreshToken", data.refreshToken.token, cookieMeta);
           resolve(data);
         },
         onFailure: (err) => {
           console.log("onFailure", err);
-
           reject(err);
         },
         newPasswordRequired: (data) => {
-          console.log("newPasswordRequired", data);
           resolve(data);
         },
       });
@@ -50,6 +55,9 @@ const Account = (props) => {
   const logout = () => {
     const user = Pool.getCurrentUser();
     if (user) {
+      Cookies.remove("accessToken", cookieMeta);
+      Cookies.remove("idToken", cookieMeta);
+      Cookies.remove("refreshToken", cookieMeta);
       user.signOut();
     }
   };
@@ -61,4 +69,4 @@ const Account = (props) => {
   );
 };
 
-export { Account, AccountContext };
+export { AccountProvider, AccountContext };
