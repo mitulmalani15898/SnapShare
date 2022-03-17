@@ -7,7 +7,6 @@ const Copyright = (props) => {
       variant="body2"
       color="text.secondary"
       align="center"
-      sx={{ position: "fixed", bottom: 20, left: "47%" }}
       {...props}
     >
       {"Copyright © "}

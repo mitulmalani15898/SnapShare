@@ -1,10 +1,5 @@
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Outlet,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Container from "@mui/material/Container";
 
 import "./App.css";
 import Navbar from "./components/Navbar";
@@ -15,6 +10,8 @@ import Dashboard from "./components/Dashboard";
 import ForgotPassword from "./components/ForgotPassword";
 import Signup from "./components/Signup";
 import Login from "./components/Login";
+import MyDocs from "./components/MyDocs";
+import SharedDocs from "./components/SharedDocs";
 
 const PrivateRoute = ({ children }) => {
   return isLoggedIn() ? children : <Navigate to="/login" replace={true} />;
@@ -27,8 +24,18 @@ const PublicRoute = ({ children }) => {
 const PrivateWrapper = ({ children }) => (
   <PrivateRoute>
     <Navbar />
-    {children}
-    <Copyright />
+    <Container
+      component="main"
+      sx={{
+        height: 1,
+        paddingY: 3,
+        minHeight: "calc(100vh - 117px)",
+        overflow: "auto",
+      }}
+    >
+      {children}
+    </Container>
+    <Copyright sx={{ my: 2 }} />
   </PrivateRoute>
 );
 
@@ -51,7 +58,7 @@ const App = () => {
             path="/myDocs"
             element={
               <PrivateWrapper>
-                <Dashboard />
+                <MyDocs />
               </PrivateWrapper>
             }
           />
@@ -60,7 +67,7 @@ const App = () => {
             path="/sharedDocs"
             element={
               <PrivateWrapper>
-                <Dashboard />
+                <SharedDocs />
               </PrivateWrapper>
             }
           />
