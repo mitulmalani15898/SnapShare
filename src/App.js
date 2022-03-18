@@ -27,9 +27,9 @@ const PrivateWrapper = ({ children }) => (
     <Container
       component="main"
       sx={{
-        height: 1,
+        height: "calc(100vh - 117px)",
         paddingY: 3,
-        minHeight: "calc(100vh - 117px)",
+        maxHeight: "calc(100vh - 117px)",
         overflow: "auto",
       }}
     >
@@ -116,6 +116,7 @@ const App = () => {
               </PublicRoute>
             }
           />
+          <Route path="*" element={<div>Page Not Found!</div>} />
         </Routes>
       </BrowserRouter>
     </div>

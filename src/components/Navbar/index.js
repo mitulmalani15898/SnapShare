@@ -11,6 +11,7 @@ import { AccountContext } from "../AccountProvider";
 const NavlinkStyle = {
   my: 1,
   mx: 1.5,
+  fontSize: "0.875rem",
   textDecoration: "none",
   fontWeight: 500,
   ":hover": {
@@ -46,11 +47,17 @@ const Navbar = () => {
             color: (theme) => theme.palette.primary.main,
           }}
         >
-          <Link href="/" sx={{ ...NavlinkStyle, my: 0, mx: 0 }}>
+          <Link
+            href="/"
+            sx={{ ...NavlinkStyle, my: 0, mx: 0, fontSize: "unset" }}
+          >
             SnapShare
           </Link>
         </Typography>
         <nav>
+          <Link href="/" sx={NavlinkStyle}>
+            Upload Docs
+          </Link>
           <Link href="/myDocs" sx={NavlinkStyle}>
             My Docs
           </Link>
@@ -66,7 +73,7 @@ const Navbar = () => {
         </nav>
         <Button
           variant="outlined"
-          sx={NavlinkStyle}
+          sx={{ ...NavlinkStyle, fontSize: ".875rem" }}
           onClick={() => handleLogout()}
         >
           Logout
