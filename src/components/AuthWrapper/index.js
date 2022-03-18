@@ -26,10 +26,11 @@ const AuthWrapper = ({ children }) => {
           borderRadius: 2,
           py: 4,
           px: 3,
+          boxShadow: theme => theme.shadows[2]
         }}
       >
         {children}
-        <Copyright sx={{ mt: 8 }} />
+        <Copyright sx={{ mt: 6 }} />
       </Box>
     </Container>
   );
