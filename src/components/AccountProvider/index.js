@@ -15,11 +15,24 @@ const AccountProvider = (props) => {
     return await new Promise((resolve, reject) => {
       const user = Pool.getCurrentUser();
       if (user) {
-        user.getSession((err, session) => {
+        user.getSession(async (err, session) => {
           if (err) {
             reject();
           } else {
-            resolve(session);
+            const attributes = await new Promise((resolve, reject) => {
+              user.getUserAttributes(function (err, attributes) {
+                if (err) {
+                  reject(err);
+                } else {
+                  const results = {};
+                  attributes.forEach(
+                    ({ Name, Value }) => (results[Name] = Value)
+                  );
+                  resolve(results);
+                }
+              });
+            });
+            resolve({ user, ...session, ...attributes });
           }
         });
       } else {
@@ -55,15 +68,21 @@ const AccountProvider = (props) => {
   const logout = () => {
     const user = Pool.getCurrentUser();
     if (user) {
-      Cookies.remove("accessToken", cookieMeta);
-      Cookies.remove("idToken", cookieMeta);
-      Cookies.remove("refreshToken", cookieMeta);
+      removeCookies();
       user.signOut();
     }
   };
 
+  const removeCookies = () => {
+    Cookies.remove("accessToken", cookieMeta);
+    Cookies.remove("idToken", cookieMeta);
+    Cookies.remove("refreshToken", cookieMeta);
+  };
+
   return (
-    <AccountContext.Provider value={{ authenticate, getSession, logout }}>
+    <AccountContext.Provider
+      value={{ authenticate, getSession, logout, removeCookies }}
+    >
       {props.children}
     </AccountContext.Provider>
   );

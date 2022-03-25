@@ -57,19 +57,25 @@ const Signup = () => {
     }
     setErrorMessage("");
 
-    // const attributeList = [];
-    // const dataEmail = {
-    //   Name: "email",
-    //   Value: email,
-    // };
-    // const attributeEmail = new CognitoUserAttribute(dataEmail);
-    // attributeList.push(attributeEmail);
+    const attributeList = [
+      new CognitoUserAttribute({
+        Name: "email",
+        Value: email,
+      }),
+      new CognitoUserAttribute({
+        Name: "name",
+        Value: firstName,
+      }),
+      new CognitoUserAttribute({
+        Name: "family_name",
+        Value: lastName,
+      }),
+    ];
 
-    UserPool.signUp(email, password, [], null, (err, result) => {
+    UserPool.signUp(email, password, attributeList, null, (err, result) => {
       if (err) {
         return setErrorMessage(err.message || JSON.stringify(err));
       }
-      // console.log("result", result);
       const cognitoUser = result.user;
       console.log("user name is " + cognitoUser.getUsername());
       setIsRegistered(true);

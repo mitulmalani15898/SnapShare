@@ -12,6 +12,7 @@ import Signup from "./components/Signup";
 import Login from "./components/Login";
 import MyDocs from "./components/MyDocs";
 import SharedDocs from "./components/SharedDocs";
+import Profile from "./components/Profile";
 
 const PrivateRoute = ({ children }) => {
   return isLoggedIn() ? children : <Navigate to="/login" replace={true} />;
@@ -85,7 +86,7 @@ const App = () => {
             path="/profile"
             element={
               <PrivateWrapper>
-                <Dashboard />
+                <Profile />
               </PrivateWrapper>
             }
           />
