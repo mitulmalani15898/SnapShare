@@ -116,7 +116,20 @@ const App = () => {
               </PublicRoute>
             }
           />
-          <Route path="*" element={<div>Page Not Found!</div>} />
+          <Route
+            path="*"
+            element={
+              <Container
+                component="main"
+                sx={{
+                  width: "100vw",
+                  margin: "10px auto",
+                }}
+              >
+                Page Not Found!
+              </Container>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </div>
