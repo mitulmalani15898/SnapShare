@@ -3,7 +3,7 @@ import Container from "@mui/material/Container";
 
 import "./App.css";
 import Navbar from "./components/Navbar";
-import Pricing from "./components/Subscription";
+import Subscription from "./components/Subscription";
 import { isLoggedIn } from "./utility/common";
 import Copyright from "./components/Copyright";
 import Dashboard from "./components/Dashboard";
@@ -77,7 +77,7 @@ const App = () => {
             path="/subscription"
             element={
               <PrivateWrapper>
-                <Pricing />
+                <Subscription />
               </PrivateWrapper>
             }
           />

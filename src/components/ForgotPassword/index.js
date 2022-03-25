@@ -1,3 +1,5 @@
+import { useContext, useState } from "react";
+import Alert from "@mui/material/Alert";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -8,11 +10,45 @@ import FilterDramaRoundedIcon from "@mui/icons-material/FilterDramaRounded";
 import Typography from "@mui/material/Typography";
 
 import AuthWrapper from "../AuthWrapper";
+import { AccountContext } from "../AccountProvider";
+import ResetPassword from "../ResetPassword";
 
 const ForgotPassword = () => {
+  const { getCognitoUser } = useContext(AccountContext);
+
+  const [email, setEmail] = useState("");
+  const [isCodeSent, setIsCodeSent] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleChange = ({ target: { value } }) => {
+    setEmail(value);
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (!email) {
+      return setErrorMessage("Email address is required.");
+    }
+    setErrorMessage("");
+
+    getCognitoUser(email).forgotPassword({
+      onSuccess: (data) => {
+        console.log("forgotPassword onSuccess data", data);
+      },
+      onFailure: (err) => {
+        console.log("forgotPassword onFailure err", err);
+        setErrorMessage(err.message || JSON.stringify(err));
+      },
+      inputVerificationCode: (data) => {
+        console.log("forgotPassword inputVerificationCode data", data);
+        setIsCodeSent(true);
+      },
+    });
   };
+
+  if (isCodeSent) {
+    return <ResetPassword email={email} />;
+  }
 
   return (
     <AuthWrapper>
@@ -28,13 +64,20 @@ const ForgotPassword = () => {
         onSubmit={handleSubmit}
         sx={{ mt: 3, width: 1 }}
       >
+        {errorMessage && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {errorMessage}
+          </Alert>
+        )}
         <TextField
           fullWidth
-          name="firstName"
           size="small"
-          id="firstName"
-          label="First Name"
-          autoFocus
+          type="email"
+          id="email"
+          label="Email Address"
+          name="email"
+          value={email}
+          onChange={handleChange}
         />
         <Button
           type="submit"
@@ -42,7 +85,7 @@ const ForgotPassword = () => {
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
         >
-          Submit
+          Send Verification Code
         </Button>
         <Grid container justifyContent="flex-end">
           <Grid item>

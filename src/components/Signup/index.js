@@ -70,6 +70,10 @@ const Signup = () => {
         Name: "family_name",
         Value: lastName,
       }),
+      new CognitoUserAttribute({
+        Name: "custom:subscriptionPlan",
+        Value: "standard",
+      }),
     ];
 
     UserPool.signUp(email, password, attributeList, null, (err, result) => {

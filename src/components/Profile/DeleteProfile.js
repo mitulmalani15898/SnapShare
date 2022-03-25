@@ -29,7 +29,7 @@ const DeleteProfileDialog = ({ open, handleClose, handleDelete }) => {
         </DialogContentText>
       </DialogContent>
       <DialogActions sx={{ p: "0 20px 20px" }}>
-        <Button onClick={handleClose} variant="contained" color="info">
+        <Button onClick={handleClose} variant="outlined" color="info">
           Cancel
         </Button>
         <Button onClick={handleDelete} variant="contained" color="error">

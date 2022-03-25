@@ -41,9 +41,14 @@ const AccountProvider = (props) => {
     });
   };
 
+  const getCognitoUser = (Username) => {
+    const user = new CognitoUser({ Username, Pool });
+    return user;
+  };
+
   const authenticate = async (Username, Password) => {
     return await new Promise((resolve, reject) => {
-      const user = new CognitoUser({ Username, Pool });
+      const user = getCognitoUser(Username);
 
       const authDetails = new AuthenticationDetails({ Username, Password });
 
@@ -81,7 +86,13 @@ const AccountProvider = (props) => {
 
   return (
     <AccountContext.Provider
-      value={{ authenticate, getSession, logout, removeCookies }}
+      value={{
+        authenticate,
+        getSession,
+        logout,
+        removeCookies,
+        getCognitoUser,
+      }}
     >
       {props.children}
     </AccountContext.Provider>
