@@ -13,6 +13,7 @@ import Login from "./components/Login";
 import MyDocs from "./components/MyDocs";
 import SharedDocs from "./components/SharedDocs";
 import Profile from "./components/Profile";
+import ImageToPdf from "./components/ImageToPdf";
 
 const PrivateRoute = ({ children }) => {
   return isLoggedIn() ? children : <Navigate to="/login" replace={true} />;
@@ -74,6 +75,15 @@ const App = () => {
           />
           <Route
             exact
+            path="/image2pdf"
+            element={
+              <PrivateWrapper>
+                <ImageToPdf />
+              </PrivateWrapper>
+            }
+          />
+          <Route
+            exact
             path="/subscription"
             element={
               <PrivateWrapper>
@@ -124,10 +134,13 @@ const App = () => {
                 component="main"
                 sx={{
                   width: "100vw",
-                  margin: "10px auto",
+                  margin: "40px auto",
+                  fontSize: "30px",
+                  textAlign: "center",
+                  color: (theme) => theme.palette.primary.main,
                 }}
               >
-                Page Not Found!
+                404, Page Not Found!
               </Container>
             }
           />

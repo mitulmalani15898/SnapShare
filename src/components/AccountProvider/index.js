@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-import { createContext } from "react";
+import { createContext, useEffect } from "react";
 import { CognitoUser, AuthenticationDetails } from "amazon-cognito-identity-js";
 
 import Pool from "../../utility/UserPool";
@@ -11,6 +11,8 @@ const cookieMeta = {
 };
 
 const AccountProvider = (props) => {
+  useEffect(() => {}, []);
+
   const getSession = async () => {
     return await new Promise((resolve, reject) => {
       const user = Pool.getCurrentUser();

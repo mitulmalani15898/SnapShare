@@ -64,6 +64,9 @@ const Navbar = () => {
           <Link href="/sharedDocs" sx={NavlinkStyle}>
             Shared Docs
           </Link>
+          <Link href="/image2pdf" sx={NavlinkStyle}>
+            IMAGE to PDF
+          </Link>
           <Link href="/subscription" sx={NavlinkStyle}>
             Subscription
           </Link>

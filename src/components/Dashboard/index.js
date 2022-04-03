@@ -1,5 +1,7 @@
 import { useState } from "react";
 import Typography from "@mui/material/Typography";
+import Alert from "@mui/material/Alert";
+import CircularProgress from "@mui/material/CircularProgress";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -11,6 +13,13 @@ import { useNavigate } from "react-router-dom";
 import s3Client from "../../utility/S3Client";
 import axios from "../../axios";
 import { S3_RESOURCE_URL } from "../../utility/constants";
+
+const acceptedFileFormats = [
+  "application/pdf",
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+];
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -31,26 +40,44 @@ const Dashboard = () => {
 
   const handleCloseFile = () => {
     setSelectedFile(null);
+    setUploadFile({ loading: false, error: "" });
   };
 
   const handleUploadFile = async () => {
-    const fileName = selectedFile.name.replace(/ /g, "_");
+    if (!acceptedFileFormats.includes(selectedFile.type)) {
+      return setUploadFile((prev) => ({
+        ...prev,
+        error: "Only PDF, JPEG, JPG, and PNG are allowed.",
+      }));
+    }
+    setUploadFile((prev) => ({ ...prev, error: "" }));
+
+    const modifiedFile = selectedFile.name.replace(/ /g, "_");
+    const fileSize = (selectedFile.size / (1024 * 1024)).toFixed(3);
+    const lastIndexOfDot = modifiedFile.lastIndexOf(".");
+    const fileName = modifiedFile.slice(0, lastIndexOfDot);
+    const fileType = modifiedFile.slice(lastIndexOfDot + 1);
 
     const bucketParams = {
       Bucket: process.env.REACT_APP_S3_BUCKET_NAME,
-      Key: fileName,
-      FilePath: selectedFile,
+      Key: modifiedFile,
+      Body: selectedFile,
     };
+
     try {
+      setUploadFile((prev) => ({ ...prev, loading: true }));
       const data = await s3Client.send(new PutObjectCommand(bucketParams));
       if (data.$metadata.httpStatusCode === 200) {
-        const body = {};
+        const body = {
+          path: `${S3_RESOURCE_URL + modifiedFile}`,
+          fileName,
+          fileSize: `${fileSize} MB`,
+          fileType,
+        };
         if (password) {
           body.password = password;
           body.passwordEnabled = true;
         }
-        body.path = `${S3_RESOURCE_URL + fileName}`;
-        console.log("body", body);
         const res = await axios.post("/files", body);
         if (res.status === 200 && res.statusText === "OK" && res.data.success) {
           navigate("/myDocs");
@@ -70,6 +97,9 @@ const Dashboard = () => {
         ...prev,
         error: error.message,
       }));
+      setSelectedFile(null);
+    } finally {
+      setUploadFile((prev) => ({ ...prev, loading: false }));
     }
   };
 
@@ -97,11 +127,16 @@ const Dashboard = () => {
       >
         Upload Documents
       </Typography>
-
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
       <input
         type="file"
         onChange={handleSelectFile}
         hidden
+        accept="application/pdf, image/jpeg, image/png"
         id="icon-button-file"
       />
       <label htmlFor="icon-button-file">
@@ -137,7 +172,7 @@ const Dashboard = () => {
               variant="subtitle1"
               align="center"
               color="text.primary"
-              sx={{ m: 2, textDecoration: "underline" }}
+              sx={{ m: 2 }}
             >
               {selectedFile.name}
             </Typography>
@@ -159,12 +194,20 @@ const Dashboard = () => {
             onClick={handleUploadFile}
             sx={{
               fontSize: "16px",
+              minWidth: "100px",
               ":hover": {
                 background: "#161616",
               },
             }}
           >
-            Upload
+            {loading ? (
+              <CircularProgress
+                size={28}
+                sx={{ color: (theme) => theme.palette.common.white }}
+              />
+            ) : (
+              "Upload"
+            )}
           </Button>
         </>
       )}

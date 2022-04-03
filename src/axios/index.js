@@ -6,6 +6,6 @@ export default axios.create({
   baseURL: API_BASE_URL,
   timeout: 5000,
   headers: {
-    Authorization: `Bearer ${Cookies.get("accessToken", { path: "" })}`,
+    Authorization: `Bearer ${Cookies.get("idToken", { path: "" })}`,
   },
 });

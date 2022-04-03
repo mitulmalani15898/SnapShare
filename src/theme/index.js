@@ -2,7 +2,7 @@ import { forwardRef } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { createTheme } from "@mui/material/styles";
 
-const LinkBehavior = forwardRef(({ href, ...restProps }, ref) => {
+const LinkBehavior = forwardRef(({ href = "", ...restProps }, ref) => {
   // Map href (MUI) -> to (react-router)
   return (
     <RouterLink data-testid="custom-link" ref={ref} to={href} {...restProps} />
