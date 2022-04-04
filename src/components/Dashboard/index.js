@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import s3Client from "../../utility/S3Client";
 import axios from "../../axios";
 import { S3_RESOURCE_URL } from "../../utility/constants";
+import { AccountContext } from "../AccountProvider";
 
 const acceptedFileFormats = [
   "application/pdf",
@@ -23,12 +24,30 @@ const acceptedFileFormats = [
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { getSession } = useContext(AccountContext);
+
+  const [userPlan, setUserPlan] = useState("");
+  const [userDocs, setUserDocs] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const [password, setPassword] = useState("");
   const [uploadFile, setUploadFile] = useState({
     loading: false,
     error: "",
   });
+
+  useEffect(() => {
+    getUserDocs();
+    getSession().then((data) => setUserPlan(data["custom:subscriptionPlan"]));
+  }, []);
+
+  const getUserDocs = async () => {
+    const res = await axios.get("/files");
+    if (res.status === 200 && res.data.data.$metadata.httpStatusCode === 200) {
+      setUserDocs(res.data.data.Items);
+    } else {
+      setUserDocs([]);
+    }
+  };
 
   const handlePasswordChange = ({ target: { value } }) => {
     setPassword(value);
@@ -50,13 +69,26 @@ const Dashboard = () => {
         error: "Only PDF, JPEG, JPG, and PNG are allowed.",
       }));
     }
-    setUploadFile((prev) => ({ ...prev, error: "" }));
-
     const modifiedFile = selectedFile.name.replace(/ /g, "_");
     const fileSize = (selectedFile.size / (1024 * 1024)).toFixed(3);
     const lastIndexOfDot = modifiedFile.lastIndexOf(".");
     const fileName = modifiedFile.slice(0, lastIndexOfDot);
     const fileType = modifiedFile.slice(lastIndexOfDot + 1);
+
+    if (userPlan === "standard" && fileSize > 1) {
+      return setUploadFile((prev) => ({
+        ...prev,
+        error: "With Standard plan, max file size is 1 MB for uploading file.",
+      }));
+    }
+    if (userDocs.length === 5) {
+      return setUploadFile((prev) => ({
+        ...prev,
+        error: "With Standard plan, you can upload upto 5 documents.",
+      }));
+    }
+
+    setUploadFile((prev) => ({ ...prev, error: "" }));
 
     const bucketParams = {
       Bucket: process.env.REACT_APP_S3_BUCKET_NAME,

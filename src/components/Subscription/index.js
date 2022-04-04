@@ -21,8 +21,8 @@ const tiers = [
     title: "Standard",
     price: "0",
     description: [
+      "Max upload size 1 MB",
       "5 document uploads",
-      "10 share documents",
       "Help center access",
       "Email support",
     ],
@@ -32,8 +32,8 @@ const tiers = [
     title: "Ultimate",
     price: "15",
     description: [
-      "50 document uploads",
-      "100 share documents",
+      "No limit on file size",
+      "No limit on uploads",
       "Help center access",
       "Priority email support",
     ],
