@@ -6,8 +6,9 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
+import isEmpty from "lodash.isempty";
 
-import { AccountContext } from "../AccountProvider";
+import { AccountContext, secrets } from "../../AccountProvider";
 
 const UpdateProfile = () => {
   const { getSession } = useContext(AccountContext);
@@ -21,10 +22,16 @@ const UpdateProfile = () => {
   const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
-    getSession().then(({ name, family_name, email }) => {
-      setUserDetails({ firstName: name, lastName: family_name, email: email });
-    });
-  }, []);
+    if (!isEmpty(secrets)) {
+      getSession().then(({ name, family_name, email }) => {
+        setUserDetails({
+          firstName: name,
+          lastName: family_name,
+          email: email,
+        });
+      });
+    }
+  }, [secrets]);
 
   const handleChange = ({ target: { name, value } }) => {
     setUserDetails((prev) => ({ ...prev, [name]: value }));

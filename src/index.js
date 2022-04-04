@@ -5,7 +5,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 
 import App from "./App";
 import theme from "./theme";
-import { AccountProvider } from "./components/AccountProvider";
+import { AccountProvider } from "./AccountProvider";
 
 ReactDOM.render(
   <React.StrictMode>

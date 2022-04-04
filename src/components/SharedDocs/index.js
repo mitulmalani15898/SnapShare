@@ -12,11 +12,12 @@ import CloseIcon from "@mui/icons-material/Close";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
+import isEmpty from "lodash.isempty";
 
 import axios from "../../axios";
 import PasswordProtectedModal from "../PasswordProtectedModal";
 import DeleteModal from "../DeleteModal";
-import { AccountContext } from "../AccountProvider";
+import { AccountContext, secrets } from "../../AccountProvider";
 
 const SharedDocs = () => {
   const { getSession } = useContext(AccountContext);
@@ -37,10 +38,13 @@ const SharedDocs = () => {
 
   useEffect(() => {
     getSharedDocuments();
-    if (!userEmail) {
+  }, []);
+
+  useEffect(() => {
+    if (!isEmpty(secrets) && !userEmail) {
       getSession().then(({ email }) => setUserEmail(email));
     }
-  }, []);
+  }, [secrets]);
 
   const togglePasswordProtectedModal = () => {
     setPasswordProtectedModal((prev) => !prev);

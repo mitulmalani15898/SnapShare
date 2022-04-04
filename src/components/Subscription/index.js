@@ -11,8 +11,9 @@ import StarIcon from "@mui/icons-material/StarBorder";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Alert from "@mui/material/Alert";
+import isEmpty from "lodash.isempty";
 
-import { AccountContext } from "../AccountProvider";
+import { AccountContext, secrets } from "../../AccountProvider";
 import SubscriptionDialog from "./SubscriptionDialog";
 
 const tiers = [
@@ -49,10 +50,12 @@ const Subscription = () => {
   const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
-    getSession().then((res) => {
-      setSelectedPlan(res["custom:subscriptionPlan"]);
-    });
-  }, []);
+    if (!isEmpty(secrets)) {
+      getSession().then((res) => {
+        setSelectedPlan(res["custom:subscriptionPlan"]);
+      });
+    }
+  }, [secrets]);
 
   const toggleModal = () => {
     setOpenModal((prev) => !prev);

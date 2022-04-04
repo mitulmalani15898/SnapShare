@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import Button from "@mui/material/Button";
 
-import { AccountContext } from "../AccountProvider";
+import { AccountContext } from "../../AccountProvider";
 
 const NavlinkStyle = {
   my: 1,

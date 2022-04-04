@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CognitoUserAttribute } from "amazon-cognito-identity-js";
 import Alert from "@mui/material/Alert";
 import Avatar from "@mui/material/Avatar";
@@ -18,9 +18,11 @@ import FormControl from "@mui/material/FormControl";
 import FilterDramaRoundedIcon from "@mui/icons-material/FilterDramaRounded";
 
 import AuthWrapper from "../AuthWrapper";
-import UserPool from "../../utility/UserPool";
+import { AccountContext } from "../../AccountProvider";
 
 const Signup = () => {
+  const { getUserPool } = useContext(AccountContext);
+
   const [isRegistered, setIsRegistered] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -76,6 +78,7 @@ const Signup = () => {
       }),
     ];
 
+    const UserPool = getUserPool();
     UserPool.signUp(email, password, attributeList, null, (err, result) => {
       if (err) {
         return setErrorMessage(err.message || JSON.stringify(err));

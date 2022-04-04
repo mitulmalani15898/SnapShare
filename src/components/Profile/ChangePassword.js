@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 
-import { AccountContext } from "../AccountProvider";
+import { AccountContext } from "../../AccountProvider";
 
 const ChangePassword = () => {
   const { getSession } = useContext(AccountContext);

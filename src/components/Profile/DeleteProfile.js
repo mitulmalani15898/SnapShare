@@ -9,7 +9,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-import { AccountContext } from "../AccountProvider";
+import { AccountContext } from "../../AccountProvider";
 
 const DeleteProfileDialog = ({ open, handleClose, handleDelete }) => {
   return (

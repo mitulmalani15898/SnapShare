@@ -9,11 +9,10 @@ import CloseIcon from "@mui/icons-material/Close";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import TextField from "@mui/material/TextField";
 import { useNavigate } from "react-router-dom";
+import isEmpty from "lodash.isempty";
 
-import s3Client from "../../utility/S3Client";
 import axios from "../../axios";
-import { S3_RESOURCE_URL } from "../../utility/constants";
-import { AccountContext } from "../AccountProvider";
+import { AccountContext, secrets } from "../../AccountProvider";
 
 const acceptedFileFormats = [
   "application/pdf",
@@ -24,7 +23,7 @@ const acceptedFileFormats = [
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { getSession } = useContext(AccountContext);
+  const { getSession, getS3Client } = useContext(AccountContext);
 
   const [userPlan, setUserPlan] = useState("");
   const [userDocs, setUserDocs] = useState([]);
@@ -37,8 +36,13 @@ const Dashboard = () => {
 
   useEffect(() => {
     getUserDocs();
-    getSession().then((data) => setUserPlan(data["custom:subscriptionPlan"]));
   }, []);
+
+  useEffect(() => {
+    if (!isEmpty(secrets)) {
+      getSession().then((data) => setUserPlan(data["custom:subscriptionPlan"]));
+    }
+  }, [secrets]);
 
   const getUserDocs = async () => {
     const res = await axios.get("/files");
@@ -91,17 +95,18 @@ const Dashboard = () => {
     setUploadFile((prev) => ({ ...prev, error: "" }));
 
     const bucketParams = {
-      Bucket: process.env.REACT_APP_S3_BUCKET_NAME,
+      Bucket: secrets.S3_BUCKET_NAME,
       Key: modifiedFile,
       Body: selectedFile,
     };
 
     try {
       setUploadFile((prev) => ({ ...prev, loading: true }));
+      const s3Client = getS3Client();
       const data = await s3Client.send(new PutObjectCommand(bucketParams));
       if (data.$metadata.httpStatusCode === 200) {
         const body = {
-          path: `${S3_RESOURCE_URL + modifiedFile}`,
+          path: `${secrets.S3_RESOURCE_URL + modifiedFile}`,
           fileName,
           fileSize: `${fileSize} MB`,
           fileType,

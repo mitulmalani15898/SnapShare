@@ -10,7 +10,7 @@ import FilterDramaRoundedIcon from "@mui/icons-material/FilterDramaRounded";
 import Typography from "@mui/material/Typography";
 
 import AuthWrapper from "../AuthWrapper";
-import { AccountContext } from "../AccountProvider";
+import { AccountContext } from "../../AccountProvider";
 
 const ResetPassword = ({ email }) => {
   const { getCognitoUser } = useContext(AccountContext);

@@ -17,7 +17,7 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 
-import { AccountContext } from "../AccountProvider";
+import { AccountContext } from "../../AccountProvider";
 import AuthWrapper from "../AuthWrapper";
 
 const Login = () => {

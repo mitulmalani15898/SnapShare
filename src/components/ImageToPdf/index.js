@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -6,16 +6,14 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import TransformIcon from "@mui/icons-material/Transform";
 import CloseIcon from "@mui/icons-material/Close";
-import TextField from "@mui/material/TextField";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
-
-import s3Client from "../../utility/S3Client";
-import axios from "../../axios";
-import { S3_RESOURCE_URL } from "../../utility/constants";
+import { AccountContext, secrets } from "../../AccountProvider";
 
 const acceptedFileFormats = ["image/jpeg", "image/jpg", "image/png"];
 
 const ImageToPdf = () => {
+  const { getS3Client } = useContext(AccountContext);
+
   const [selectedFile, setSelectedFile] = useState(null);
   const [convertFile, setConvertFile] = useState({
     loading: false,
@@ -39,6 +37,17 @@ const ImageToPdf = () => {
       }));
     }
     setConvertFile((prev) => ({ ...prev, error: "" }));
+    const modifiedFile = selectedFile.name.replace(/ /g, "_");
+    const fileSize = (selectedFile.size / (1024 * 1024)).toFixed(3);
+    const lastIndexOfDot = modifiedFile.lastIndexOf(".");
+    const fileName = modifiedFile.slice(0, lastIndexOfDot);
+    const fileType = modifiedFile.slice(lastIndexOfDot + 1);
+
+    const bucketParams = {
+      Bucket: secrets.S3_IMAGE_BUCKET_NAME,
+      Key: modifiedFile,
+      Body: selectedFile,
+    };
   };
 
   const { loading, error } = convertFile;
