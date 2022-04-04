@@ -79,7 +79,7 @@ const Dashboard = () => {
           body.passwordEnabled = true;
         }
         const res = await axios.post("/files", body);
-        if (res.status === 200 && res.statusText === "OK" && res.data.success) {
+        if (res.status === 200 && res.data.success) {
           navigate("/myDocs");
         } else {
           throw new Error(

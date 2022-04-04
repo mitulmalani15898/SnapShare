@@ -5,7 +5,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
 
-const DeleteModal = ({ open, handleClose, handleDeleteFile }) => {
+const DeleteModal = ({ open, handleClose, type, handleDeleteFile }) => {
   return (
     <Dialog
       open={open}
@@ -14,11 +14,11 @@ const DeleteModal = ({ open, handleClose, handleDeleteFile }) => {
       PaperProps={{ sx: { position: "fixed", top: 40 } }}
     >
       <DialogTitle sx={{ lineHeight: 1.2 }}>
-        Are you sure you want to delete file?
+        Are you sure you want to {type} file?
       </DialogTitle>
       <DialogContent>
         <DialogContentText>
-          Once you will click on delete button, your file will be deleted and
+          Once you will click on {type} button, your file will be {type}d and
           cannot be recovered.
         </DialogContentText>
       </DialogContent>
@@ -27,7 +27,7 @@ const DeleteModal = ({ open, handleClose, handleDeleteFile }) => {
           Cancel
         </Button>
         <Button onClick={handleDeleteFile} variant="contained" color="error">
-          Delete
+          {type}
         </Button>
       </DialogActions>
     </Dialog>

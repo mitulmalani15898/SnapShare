@@ -12,17 +12,25 @@ import CircularProgress from "@mui/material/CircularProgress";
 import DeleteForeverRoundedIcon from "@mui/icons-material/DeleteForeverRounded";
 import ShareRoundedIcon from "@mui/icons-material/ShareRounded";
 import Box from "@mui/material/Box";
+import Link from "@mui/material/Link";
 
 import axios from "../../axios";
 import DeleteModal from "../DeleteModal";
-import { Link } from "@mui/material";
 import PasswordProtectedModal from "../PasswordProtectedModal";
+import ShareFileModal from "../ShareFileModal";
+
+const emailRegex = /\S+@\S+\.\S+/;
 
 const MyDocs = () => {
-  const [password, setPassword] = useState("");
-  const [passwordError, setPasswordError] = useState("");
   const [deleteModal, setDeleteModal] = useState(false);
   const [passwordProtectedModal, setPasswordProtectedModal] = useState(false);
+  const [shareFileModal, setShareFileModal] = useState(false);
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [shareFileSuccess, setShareFileSuccess] = useState("");
+  const [deleteFileSuccess, setDeleteFileSuccess] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedId, setSelectedId] = useState("");
   const [documents, setDocuments] = useState({
@@ -43,31 +51,44 @@ const MyDocs = () => {
     setPasswordProtectedModal((prev) => !prev);
   };
 
-  const handleDeleteIconClick = (id) => () => {
-    toggleDeleteModal();
-    setSelectedId(id);
+  const toggleShareFileModal = () => {
+    setShareFileModal((prev) => !prev);
   };
 
-  const handleDeleteFile = async () => {
-    try {
-      const res = await axios.post("/files/delete", { fileId: selectedId });
-      if (res.status === 200 && res.statusText === "OK" && res.data.success) {
-        setDocuments((prev) => ({
-          ...prev,
-          data: prev.data.filter((d) => d.id.S !== selectedId),
-        }));
-      }
-    } catch (error) {
-      console.log("handleDeleteFile Error", error);
-      setDocuments((prev) => ({ ...prev, error: error.message }));
-    } finally {
-      toggleDeleteModal();
-    }
+  const handleDeleteIconClick = (id) => () => {
+    setSelectedId(id);
+    toggleDeleteModal();
+  };
+
+  const handleShareDocIconClick = (id) => () => {
+    setSelectedId(id);
+    toggleShareFileModal();
   };
 
   const handleDownloadFileClick = (file) => () => {
     setSelectedFile(file);
     togglePasswordProtectedModal();
+  };
+
+  const handleDeleteFile = async () => {
+    try {
+      const res = await axios.post("/files/delete", { fileId: selectedId });
+      if (res.status === 200 && res.data.success) {
+        setDocuments((prev) => ({
+          ...prev,
+          data: prev.data.filter((d) => d.id.S !== selectedId),
+        }));
+        setDeleteFileSuccess("File has been deleted successfully.");
+      } else {
+        throw new Error(res.data.message);
+      }
+    } catch (error) {
+      console.log("handleDeleteFile Error", error);
+      setDocuments((prev) => ({ ...prev, error: error.message }));
+    } finally {
+      setSelectedId("");
+      toggleDeleteModal();
+    }
   };
 
   const handleDownloadFile = async () => {
@@ -80,14 +101,42 @@ const MyDocs = () => {
         fileId: selectedFile.id.S,
         password,
       });
-      if (res.status === 200 && res.statusText === "OK" && res.data.success) {
+      if (res.status === 200 && res.data.success) {
+        setDocuments((prev) => ({ ...prev, error: "" }));
         saveAs(res.data.data);
+      } else {
+        throw new Error(res.data.message);
       }
     } catch (error) {
       console.log("handleDownloadFile Error", error);
       setDocuments((prev) => ({ ...prev, error: error.message }));
     } finally {
+      setPassword("");
+      setSelectedFile(null);
       togglePasswordProtectedModal();
+    }
+  };
+
+  const handleShareFile = async () => {
+    if (!email || !emailRegex.test(email)) {
+      return setEmailError("Please provide valid email address.");
+    }
+    setEmailError("");
+    try {
+      const res = await axios.post("/members", {
+        fileId: selectedId,
+        users: [email],
+      });
+      if (res.status === 200 && res.data.success) {
+        setShareFileSuccess("File has been shared successfully.");
+      }
+    } catch (error) {
+      console.log("handleShareFile Error", error);
+      setDocuments((prev) => ({ ...prev, error: error.message }));
+    } finally {
+      setEmail("");
+      setSelectedId("");
+      toggleShareFileModal();
     }
   };
 
@@ -97,7 +146,6 @@ const MyDocs = () => {
       const res = await axios.get("/files");
       if (
         res.status === 200 &&
-        res.statusText === "OK" &&
         res.data.data.$metadata.httpStatusCode === 200
       ) {
         setDocuments((prev) => ({
@@ -146,10 +194,19 @@ const MyDocs = () => {
 
   return (
     <>
+      <ShareFileModal
+        emailError={emailError}
+        email={email}
+        setEmail={setEmail}
+        open={shareFileModal}
+        handleClose={toggleShareFileModal}
+        handleShareFile={handleShareFile}
+      />
       <DeleteModal
         open={deleteModal}
         handleClose={toggleDeleteModal}
         handleDeleteFile={handleDeleteFile}
+        type="delete"
       />
       <PasswordProtectedModal
         passwordError={passwordError}
@@ -160,6 +217,11 @@ const MyDocs = () => {
         handleClose={togglePasswordProtectedModal}
         handleDownloadFile={handleDownloadFile}
       />
+      {(shareFileSuccess || deleteFileSuccess) && (
+        <Alert severity="success" sx={{ mb: 2 }}>
+          {shareFileSuccess || deleteFileSuccess}
+        </Alert>
+      )}
       {error && (
         <Alert severity="error" sx={{ mb: 2 }}>
           {error}
@@ -170,7 +232,7 @@ const MyDocs = () => {
           <TableHead>
             <TableRow>
               <TableCell>Document Name</TableCell>
-              <TableCell align="center">Document Type</TableCell>
+              <TableCell align="center">Type</TableCell>
               <TableCell align="center">Size</TableCell>
               <TableCell align="center">Created</TableCell>
               <TableCell align="center">Actions</TableCell>
@@ -215,6 +277,7 @@ const MyDocs = () => {
                         mr: 2,
                         cursor: "pointer",
                       }}
+                      onClick={handleShareDocIconClick(document.id.S)}
                     />
                     <DeleteForeverRoundedIcon
                       sx={{
