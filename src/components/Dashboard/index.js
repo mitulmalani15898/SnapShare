@@ -46,7 +46,7 @@ const Dashboard = () => {
 
   const getUserDocs = async () => {
     const res = await axios.get("/files");
-    if (res.status === 200 && res.data.data.$metadata.httpStatusCode === 200) {
+    if (res.status === 200 && res.data.success) {
       setUserDocs(res.data.data.Items);
     } else {
       setUserDocs([]);
