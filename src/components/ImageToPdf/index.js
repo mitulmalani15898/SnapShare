@@ -8,12 +8,12 @@ import Box from "@mui/material/Box";
 import TransformIcon from "@mui/icons-material/Transform";
 import CloseIcon from "@mui/icons-material/Close";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
-import { AccountContext, secrets } from "../../AccountProvider";
+import { AccountContext } from "../../AccountProvider";
 
 const acceptedFileFormats = ["image/jpeg", "image/jpg", "image/png"];
 
 const ImageToPdf = () => {
-  const { getS3Client } = useContext(AccountContext);
+  const { getS3Client, secrets } = useContext(AccountContext);
 
   const [showDownloadButton, setShowDownloadButton] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);

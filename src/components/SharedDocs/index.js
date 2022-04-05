@@ -17,10 +17,10 @@ import isEmpty from "lodash.isempty";
 import axios from "../../axios";
 import PasswordProtectedModal from "../PasswordProtectedModal";
 import DeleteModal from "../DeleteModal";
-import { AccountContext, secrets } from "../../AccountProvider";
+import { AccountContext } from "../../AccountProvider";
 
 const SharedDocs = () => {
-  const { getSession } = useContext(AccountContext);
+  const { getSession, secrets } = useContext(AccountContext);
 
   const [deleteModal, setDeleteModal] = useState(false);
   const [passwordProtectedModal, setPasswordProtectedModal] = useState(false);

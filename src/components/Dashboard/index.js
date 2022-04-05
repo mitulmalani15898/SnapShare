@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import isEmpty from "lodash.isempty";
 
 import axios from "../../axios";
-import { AccountContext, secrets } from "../../AccountProvider";
+import { AccountContext } from "../../AccountProvider";
 
 const acceptedFileFormats = [
   "application/pdf",
@@ -23,7 +23,7 @@ const acceptedFileFormats = [
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { getSession, getS3Client } = useContext(AccountContext);
+  const { secrets, getSession, getS3Client } = useContext(AccountContext);
 
   const [userPlan, setUserPlan] = useState("");
   const [userDocs, setUserDocs] = useState([]);
@@ -85,7 +85,7 @@ const Dashboard = () => {
         error: "With Standard plan, max file size is 1 MB for uploading file.",
       }));
     }
-    if (userDocs.length === 5) {
+    if (userPlan === "standard" && userDocs.length === 5) {
       return setUploadFile((prev) => ({
         ...prev,
         error: "With Standard plan, you can upload upto 5 documents.",

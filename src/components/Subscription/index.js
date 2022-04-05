@@ -13,7 +13,7 @@ import Container from "@mui/material/Container";
 import Alert from "@mui/material/Alert";
 import isEmpty from "lodash.isempty";
 
-import { AccountContext, secrets } from "../../AccountProvider";
+import { AccountContext } from "../../AccountProvider";
 import SubscriptionDialog from "./SubscriptionDialog";
 
 const tiers = [
@@ -42,7 +42,7 @@ const tiers = [
 ];
 
 const Subscription = () => {
-  const { getSession } = useContext(AccountContext);
+  const { getSession, secrets } = useContext(AccountContext);
 
   const [selectedPlan, setSelectedPlan] = useState("");
   const [openModal, setOpenModal] = useState(false);

@@ -8,10 +8,10 @@ import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 import isEmpty from "lodash.isempty";
 
-import { AccountContext, secrets } from "../../AccountProvider";
+import { AccountContext } from "../../AccountProvider";
 
 const UpdateProfile = () => {
-  const { getSession } = useContext(AccountContext);
+  const { getSession, secrets } = useContext(AccountContext);
 
   const [userDetails, setUserDetails] = useState({
     firstName: "",

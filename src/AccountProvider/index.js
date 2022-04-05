@@ -1,6 +1,6 @@
 import Cookies from "js-cookie";
 import axios from "axios";
-import { createContext, useEffect } from "react";
+import { createContext, useEffect, useState } from "react";
 import { S3Client } from "@aws-sdk/client-s3";
 import {
   CognitoUser,
@@ -15,9 +15,9 @@ const cookieMeta = {
   path: "",
 };
 
-let secrets = {};
-
 const AccountProvider = (props) => {
+  const [secrets, setSecrets] = useState({});
+
   useEffect(() => {
     getAwsCredentials();
   }, []);
@@ -27,7 +27,7 @@ const AccountProvider = (props) => {
       "https://wszv10gk5c.execute-api.us-east-1.amazonaws.com/get-credentials"
     );
     if (res.status === 200) {
-      secrets = res.data.secrets;
+      setSecrets(res.data.secrets);
     }
   };
 
@@ -130,6 +130,7 @@ const AccountProvider = (props) => {
   return (
     <AccountContext.Provider
       value={{
+        secrets,
         authenticate,
         getSession,
         logout,
@@ -144,4 +145,4 @@ const AccountProvider = (props) => {
   );
 };
 
-export { AccountProvider, AccountContext, secrets };
+export { AccountProvider, AccountContext };
