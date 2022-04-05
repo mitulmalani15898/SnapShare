@@ -1,4 +1,5 @@
 import { useContext, useState } from "react";
+import { saveAs } from "file-saver";
 import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -14,6 +15,7 @@ const acceptedFileFormats = ["image/jpeg", "image/jpg", "image/png"];
 const ImageToPdf = () => {
   const { getS3Client } = useContext(AccountContext);
 
+  const [showDownloadButton, setShowDownloadButton] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [convertFile, setConvertFile] = useState({
     loading: false,
@@ -29,7 +31,7 @@ const ImageToPdf = () => {
     setConvertFile({ loading: false, error: "" });
   };
 
-  const handleUploadFile = async () => {
+  const handleConvertFile = async () => {
     if (!acceptedFileFormats.includes(selectedFile.type)) {
       return setConvertFile((prev) => ({
         ...prev,
@@ -38,16 +40,43 @@ const ImageToPdf = () => {
     }
     setConvertFile((prev) => ({ ...prev, error: "" }));
     const modifiedFile = selectedFile.name.replace(/ /g, "_");
-    const fileSize = (selectedFile.size / (1024 * 1024)).toFixed(3);
     const lastIndexOfDot = modifiedFile.lastIndexOf(".");
-    const fileName = modifiedFile.slice(0, lastIndexOfDot);
     const fileType = modifiedFile.slice(lastIndexOfDot + 1);
 
     const bucketParams = {
       Bucket: secrets.S3_IMAGE_BUCKET_NAME,
-      Key: modifiedFile,
+      Key: "Image." + fileType,
       Body: selectedFile,
     };
+
+    try {
+      setConvertFile((prev) => ({ ...prev, loading: true }));
+      const s3Client = getS3Client();
+      const data = await s3Client.send(new PutObjectCommand(bucketParams));
+      if (data.$metadata.httpStatusCode === 200) {
+        setTimeout(() => {
+          setShowDownloadButton(true);
+        }, 2000);
+      } else {
+        throw new Error(
+          "Something went wrong, please try again after sometime."
+        );
+      }
+    } catch (error) {
+      console.log("handleConvertFile Error", error);
+      setConvertFile((prev) => ({
+        ...prev,
+        error: error.message,
+      }));
+    } finally {
+      setSelectedFile(null);
+      setConvertFile((prev) => ({ ...prev, loading: false }));
+    }
+  };
+
+  const handleDownloadFile = () => {
+    saveAs(secrets.S3_PDF_URL + "uploaded_document.pdf", "Converted_File.pdf");
+    setShowDownloadButton(false);
   };
 
   const { loading, error } = convertFile;
@@ -128,7 +157,7 @@ const ImageToPdf = () => {
 
           <Button
             variant="contained"
-            onClick={handleUploadFile}
+            onClick={handleConvertFile}
             sx={{
               fontSize: "16px",
               minWidth: "100px",
@@ -147,6 +176,22 @@ const ImageToPdf = () => {
             )}
           </Button>
         </>
+      )}
+      {showDownloadButton && (
+        <Button
+          variant="contained"
+          onClick={handleDownloadFile}
+          sx={{
+            mt: 2,
+            fontSize: "16px",
+            minWidth: "100px",
+            ":hover": {
+              background: "#161616",
+            },
+          }}
+        >
+          Download File
+        </Button>
       )}
     </Box>
   );
