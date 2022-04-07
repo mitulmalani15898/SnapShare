@@ -1,70 +1,57 @@
-# Getting Started with Create React App
+# Project - CSCI 5409 - Group 35 - Thunder Cloud - SnapShare
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+- _Date Created_: 10 MAR 2022
+- _Last Modification Date_: 06 APR 2022
+- _Deployed Application URL_: <http://snapshare-app.s3-website-us-east-1.amazonaws.com/>
+- _Git Repository URL_: <https://git.cs.dal.ca/malani/group35_csci5409>
 
-## Available Scripts
+## Authors
 
-In the project directory, you can run:
+- [Kushang Arunbhai Mistry](kushang.mistry@dal.ca) - _(Maintainer)_
+- [Mitul Pravinbhai Malani](mt215690@dal.ca) - _(Maintainer)_
+- [Prit Atul Thakkar](prit.thakkar@dal.ca) - _(Maintainer)_
 
-### `npm start`
+## Getting Started
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+See the following section for detailed step-by-step instructions on how to run this project locally and See deployment for notes on how to deploy the project on a live system.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Prerequisites
 
-### `npm test`
+To have a local copy of this tutorial up and running on your local machine, you will first need to install the following software
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- [Node.js](https://nodejs.org/en/) - a JavaScript runtime (includes npm)
+- [npm](https://docs.npmjs.com/about-npm) - a package manager for Node environment
 
-### `npm run build`
+### Installing
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+To get a development env running on local machine, run the following command in the project directory
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Below command installs all the packages provided in package.json file into the folder called node_modules at the root of the project directory. You can see node_modules folder created at the root of the project directory when installation gets successful.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+npm install
+```
 
-### `npm run eject`
+Below command runs the project in development mode. You can visit [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```
+npm start
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Built With
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- [React](https://reactjs.org/docs/getting-started.html) - A JS library for building UIs
+- [React router dom](https://reactrouter.com/docs/en/v6/getting-started/installation) - A library for frontend routing for Single Page Application (SPA)
+- [Material UI](https://mui.com/getting-started/installation/) - The React UI library
+- [Amazon Cognito Identity](https://www.npmjs.com/package/amazon-cognito-identity-js) - Amazon Cognito Identity SDK for JavaScript
+- [file-saver](https://www.npmjs.com/package/file-saver) - File saver library
+- [js-cookie](https://www.npmjs.com/package/js-cookie) - A simple, lightweight JavaScript API for handling cookies
+- [axios](https://www.npmjs.com/package/axios) - Promise based HTTP client for the browser and node.js
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Acknowledgments
 
-## Learn More
+- This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+The following utility methods from lodash is used for debouncing and checking emptiness of object,
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- “Npm: Lodash.Isempty,” npm. [Online]. Available: https://www.npmjs.com/package/lodash.isempty. [Accessed: 29-Mar-2022].
